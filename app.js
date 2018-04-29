@@ -1,25 +1,30 @@
-const http = require('http');
+const express = require('express')
+const httpProxy = require('http-proxy');
 
-const hostname = '127.0.0.1';
 const port = 3000;
 
-var server = http.createServer((request, response) => {
-  const { headers, method, url } = request;
+const app = express()
+const proxy = httpProxy.createProxyServer({});
+
+app.all('/api/V1/sensor/UploadSensor', function (req, res, next) {
   let body = [];
-  request.on('error', (err) => {
+  req.on('error', (err) => {
     console.error(err);
   }).on('data', (chunk) => {
     body.push(chunk);
   }).on('end', () => {
     body = Buffer.concat(body).toString();
-    
     console.log(body);
+    // this is where we can hook into another system and 
+    // do something with the sensor data
   });
-  response.statusCode = 200;
-  response.setHeader('Content-Type', 'text/plain');
-  response.end('Hello World\n');
+
+  next()
+})
+
+app.all('*', function (req, res) {
+  console.log('Forwarding request upstream %s %s', req.method, req.path)
+  proxy.web(req, res, { target: 'http://www.solax-portal.com' });
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.listen(port, () => console.log('Server app listening on port %s!', port))
