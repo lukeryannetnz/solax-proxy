@@ -2,5 +2,13 @@
   "dependencies": {
     "express": "^4.16.3",
     "http-proxy": "^1.17.0"
+  },
+  "devDependencies": {
+    "newman": "^3.9.3"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test-prod": "newman run postman_tests/solax-proxy.postman_collection.json -e postman_tests/solax-portal-production.postman_environment.json",
+    "test": "newman run postman_tests/solax-proxy.postman_collection.json -e postman_tests/solax-proxy.postman_environment.json"
   }
 }
