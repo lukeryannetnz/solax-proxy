@@ -27,4 +27,4 @@ app.all('*', function (req, res) {
   proxy.web(req, res, { target: 'http://www.solax-portal.com' });
 });
 
-app.listen(port, () => console.log('Server app listening on port %s!', port))
+app.listen(port, () => console.log('solax proxy listening on port %s!', port))
